@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senam Anak Indonesia Hebat - Kuis PJOK SMP BBM Wanaherang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .drag-card {
+            touch-action: none;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .drag-card:active {
+            cursor: grabbing;
+            transform: scale(1.03);
+        }
+
+        .drag-card.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #0284c7;
+            background-color: #e0f2fe;
+            transform: scale(1.01);
+        }
+
+        .sortable-item {
+            touch-action: none;
+            cursor: grab;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+        }
+        .sortable-item:active {
+            cursor: grabbing;
+        }
+
+        @keyframes pulse-success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-success {
+            animation: pulse-success 0.4s ease-in-out;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between min-h-screen p-3 md:p-6">
+
+    <header class="max-w-5xl mx-auto w-full glass-card rounded-2xl p-4 mb-4 shadow-sm flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3">
+            <div class="bg-sky-600 text-white p-3 rounded-xl shadow-md">
+                <i class="fa-solid fa-person-running text-xl md:text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-base md:text-lg font-bold text-sky-900 leading-tight">SMP BBM WANAHERANG</h1>
+                <p class="text-xs text-sky-600 font-semibold">PJOK - Fase D | Guru: Drs. H. Prabowo</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Student Header Badge -->
+            <div id="userInfoHeader" class="hidden flex items-center space-x-3 bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-200">
+                <div class="text-right">
+                    <span id="headerStudentName" class="block font-bold text-xs md:text-sm text-sky-900">Siswa</span>
+                    <span id="headerStudentClass" class="block text-[10px] text-sky-600 font-medium">Kelas</span>
+                </div>
+            </div>
+
+            <!-- Admin Login Trigger Button -->
+            <button onclick="toggleAdminModal(true)" class="bg-slate-800 hover:bg-slate-900 text-amber-400 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow transition-all" title="Portal Guru / Admin Rekap">
+                <i class="fa-solid fa-user-shield text-sm"></i>
+                <span class="hidden sm:inline">Panel Guru & Rekap Nilai</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full flex-grow flex flex-col justify-center">
+
+        <section id="landingPage" class="glass-card rounded-3xl p-6 md:p-10 shadow-xl border border-white text-center">
+            <div class="inline-block bg-sky-100 text-sky-700 font-bold px-4 py-1.5 rounded-full text-xs md:text-sm mb-4">
+                ✨ KUIS INTERAKTIF DRAG & DROP PJOK
+            </div>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 mb-2 leading-tight">
+                SENAM ANAK INDONESIA HEBAT
+            </h2>
+            <p class="text-sky-600 font-semibold text-sm md:text-base mb-6">
+                "BERGERAK BERSAMA KESEHATAN MENINGKAT – Kesehatan Harus Kita Sendiri yang Menjaga!"
+            </p>
+
+            <!-- Input Form Identity -->
+            <div class="max-w-md mx-auto bg-white/80 p-5 md:p-6 rounded-2xl shadow-inner border border-sky-100 text-left mb-6">
+                <h3 class="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-sky-600"></i> Isi Identitas Diri Sebelum Memulai:
+                </h3>
+                <div class="mb-3">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="inputStudentName" placeholder="Contoh: Ahmad Rizki" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas</label>
+                    <select id="inputStudentClass" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="VII-A">Kelas VII-A</option>
+                        <option value="VII-B">Kelas VII-B</option>
+                        <option value="VIII-A">Kelas VIII-A</option>
+                        <option value="VIII-B">Kelas VIII-B</option>
+                        <option value="IX-A">Kelas IX-A</option>
+                        <option value="IX-B">Kelas IX-B</option>
+                    </select>
+                </div>
+                <button id="btnStartQuiz" onclick="startQuiz()" class="w-full bg-sky-600 hover:bg-sky-700 active:scale-98 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-base">
+                    🚀 MULAI MISI <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-wrap justify-center items-center gap-4 text-xs font-medium text-slate-500">
+                <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-sky-600"></i> 5 Misi Tantangan</span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-circle-question text-sky-600"></i> 25 Soal PJOK</span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-trophy text-amber-500"></i> Standar Nilai 100</span>
+            </div>
+        </section>
+
+        <section id="quizPage" class="hidden flex-col gap-4">
+            
+            <!-- Progress & Stats Header -->
+            <div class="glass-card p-4 rounded-2xl shadow-sm flex flex-col md:flex-row justify-between items-center gap-3">
+                <!-- Mission Badge -->
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <span id="missionBadge" class="bg-amber-500 text-white font-extrabold px-3 py-1 rounded-xl text-xs uppercase tracking-wider shadow">
+                        MISI 1
+                    </span>
+                    <div>
+                        <h3 id="missionTitle" class="font-bold text-slate-800 text-sm">Kenali Senam Anak Indonesia Hebat</h3>
+                        <p id="missionSubtitle" class="text-xs text-slate-500">Soal <span id="currentQuestionNum">1</span> dari 25</p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar & Score -->
+                <div class="w-full md:w-1/2 flex items-center gap-3">
+                    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden border border-slate-300">
+                        <div id="progressBar" class="bg-sky-500 h-full w-0 transition-all duration-300 rounded-full"></div>
+                    </div>
+                    <div class="flex items-center gap-1 font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200 text-xs shrink-0">
+                        <i class="fa-solid fa-star"></i>
+                        <span id="scoreDisplay">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card Container -->
+            <div class="glass-card rounded-3xl p-5 md:p-8 shadow-lg border border-white">
+                
+                <!-- Question Title / Context -->
+                <div class="mb-6">
+                    <div class="flex items-start gap-3">
+                        <span id="qIndexBadge" class="bg-sky-100 text-sky-800 font-bold px-3 py-1 rounded-lg text-sm shrink-0">Soal 1</span>
+                        <p id="questionText" class="text-sm md:text-base font-semibold text-slate-800 leading-relaxed">
+                            Loading pertanyaan...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interactive Answer Area (Dynamic based on Question Type) -->
+                <div id="interactiveArea" class="min-h-[220px] mb-6 flex flex-col justify-center">
+                    <!-- Loaded dynamically via JavaScript -->
+                </div>
+
+                <!-- Feedback Banner -->
+                <div id="feedbackBanner" class="hidden p-4 rounded-2xl mb-4 text-sm font-semibold flex items-center gap-3 transition-all">
+                    <i id="feedbackIcon" class="fa-solid text-xl"></i>
+                    <div id="feedbackText" class="flex-grow"></div>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-200">
+                    <div class="text-xs text-slate-500 flex items-center gap-1">
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i> <span id="interactionHint">Seret kartu jawaban ke area tujuan yang tepat.</span>
+                    </div>
+                    <button id="btnNext" onclick="nextQuestion()" disabled class="bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 text-sm">
+                        <span>Misi Berikutnya</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="resultPage" class="hidden glass-card rounded-3xl p-6 md:p-10 shadow-xl border border-white text-center">
+            
+            <div class="mb-6">
+                <span class="text-5xl mb-2 inline-block">🎉</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">MISI SELESAI!</h2>
+                <p class="text-xs md:text-sm text-slate-500 mt-1">Laporan Hasil Kuis Senam Anak Indonesia Hebat PJOK</p>
+            </div>
+
+            <!-- Student Profile Badge -->
+            <div class="max-w-md mx-auto bg-sky-50 rounded-2xl p-4 border border-sky-100 mb-6 flex items-center justify-around text-left">
+                <div>
+                    <span class="text-[10px] uppercase font-bold text-sky-600 tracking-wider">Nama Siswa</span>
+                    <h4 id="resStudentName" class="font-bold text-slate-800 text-sm md:text-base">-</h4>
+                </div>
+                <div class="border-l border-sky-200 pl-4">
+                    <span class="text-[10px] uppercase font-bold text-sky-600 tracking-wider">Kelas / Sekolah</span>
+                    <h4 id="resStudentClass" class="font-bold text-slate-800 text-sm md:text-base">-</h4>
+                </div>
+            </div>
+
+            <!-- Score Summary Dashboard -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mb-6">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-xs text-slate-500 block mb-1 font-medium">SKOR AKHIR</span>
+                    <span id="resFinalScore" class="text-2xl md:text-3xl font-extrabold text-sky-600">0</span>
+                    <span class="text-xs text-slate-400">/ 100</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-xs text-slate-500 block mb-1 font-medium">BENAR</span>
+                    <span id="resCorrectCount" class="text-2xl md:text-3xl font-extrabold text-emerald-500">0</span>
+                    <span class="text-xs text-slate-400">/ 25 Soal</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-xs text-slate-500 block mb-1 font-medium">SALAH</span>
+                    <span id="resWrongCount" class="text-2xl md:text-3xl font-extrabold text-rose-500">0</span>
+                    <span class="text-xs text-slate-400">/ 25 Soal</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <span class="text-xs text-slate-500 block mb-1 font-medium">AKURASI</span>
+                    <span id="resPercentage" class="text-2xl md:text-3xl font-extrabold text-amber-500">0%</span>
+                    <span class="text-xs text-slate-400">Persentase</span>
+                </div>
+            </div>
+
+            <!-- Category & Motivation Card -->
+            <div class="max-w-md mx-auto bg-white p-5 rounded-2xl shadow-md border border-slate-200 mb-6">
+                <div class="text-xs font-semibold text-slate-400 mb-1">KATEGORI PENCAPAIAN</div>
+                <div id="resCategory" class="text-lg font-extrabold text-sky-800 mb-2">Master Berpikir Komputasional</div>
+                <p id="resMotivation" class="text-xs md:text-sm text-slate-600 italic">
+                    "Luar biasa! Kamu memahami konsep gerak irama dengan sempurna."
+                </p>
+            </div>
+
+            <!-- Submission Status Banner for Students -->
+            <div class="max-w-md mx-auto bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6 text-xs text-emerald-800 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-emerald-600 text-base"></i>
+                <span><strong>Salinan Rekap Tersimpan!</strong> Nilai Anda secara otomatis telah terekam di sistem Panel Guru.</span>
+            </div>
+
+            <!-- Direct Email Send Button for Student -->
+            <div class="max-w-md mx-auto mb-8">
+                <button onclick="openEmailModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-5 rounded-2xl shadow-md text-xs md:text-sm transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-amber-300"></i> Kirim Salinan Rekap Nilai ke Guru via Email
+                </button>
+            </div>
+
+            <!-- Result Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 max-w-lg mx-auto">
+                <button onclick="toggleDiscussionModal(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md text-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i> 📖 Lihat Pembahasan
+                </button>
+                <button onclick="goHome()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2.5 px-5 rounded-xl shadow-md text-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i> 🏠 Kembali ke Beranda
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal Email Rekap -->
+    <div id="emailModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-left">
+            <div class="p-5 bg-indigo-700 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2 font-bold text-sm md:text-base">
+                    <i class="fa-solid fa-envelope-circle-check text-amber-300 text-lg"></i> Salinan Rekap Email Guru PJOK
+                </div>
+                <button onclick="toggleEmailModal(false)" class="text-white hover:bg-indigo-800 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto space-y-4 text-xs">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 space-y-1 text-indigo-900">
+                    <div class="flex justify-between items-center border-b border-indigo-200 pb-2 mb-2">
+                        <span class="font-semibold text-slate-500">Tujuan Email Guru:</span>
+                        <span class="font-extrabold text-indigo-700 text-sm">heruprabowo31@guru.smp.belajar.id</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600">
+                        Berikut adalah format salinan rekap hasil kuis yang telah disusun rapi untuk dikirimkan kepada Bapak Drs. H. Prabowo.
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Pratinjau Isi Email Rekap:</label>
+                    <textarea id="emailBodyPreview" readonly class="w-full h-56 p-3 bg-slate-50 border border-slate-300 rounded-xl font-mono text-[11px] leading-relaxed text-slate-800 focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex flex-wrap gap-2 pt-2">
+                    <button onclick="sendMailtoEmail()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-paper-plane"></i> Buka Aplikasi Email & Kirim
+                    </button>
+                    <button onclick="copyEmailText()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-copy"></i> Salin Teks Rekap ke Clipboard
+                    </button>
+                </div>
+                <p id="copyStatusText" class="text-center font-bold text-emerald-600 hidden text-[11px] animate-pulse">
+                    ✓ Teks salinan rekap berhasil disalin! Tinggal tempel/paste di email Anda.
+                </p>
+            </div>
+
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right">
+                <button onclick="toggleEmailModal(false)" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 px-5 rounded-xl text-xs">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="discussionModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 bg-sky-600 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2 font-bold text-lg">
+                    <i class="fa-solid fa-book-open"></i> Pembahasan Soal Kuis
+                </div>
+                <button onclick="toggleDiscussionModal(false)" class="text-white hover:bg-sky-700 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="discussionContent" class="p-5 overflow-y-auto space-y-4 text-left text-sm">
+                <!-- Dynamically filled with JavaScript -->
+            </div>
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right">
+                <button onclick="toggleDiscussionModal(false)" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-xl text-xs">
+                    Tutup Pembahasan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-left">
+            <div class="p-5 bg-slate-800 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-2 font-bold text-base md:text-lg">
+                    <i class="fa-solid fa-user-shield text-amber-400"></i> Panel Guru & Salinan Rekap Nilai Siswa (Drs. H. Prabowo)
+                </div>
+                <button onclick="toggleAdminModal(false)" class="text-white hover:bg-slate-700 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Login Section for Admin -->
+            <div id="adminLoginSec" class="p-8 text-center my-auto">
+                <i class="fa-solid fa-lock text-5xl text-sky-600 mb-4"></i>
+                <h4 class="font-bold text-slate-800 text-lg mb-1">Masukan Kata Sandi Guru / Admin</h4>
+                <p class="text-xs text-slate-500 mb-4">Akses khusus untuk melihat dan mengunduh hasil rekapitulasi nilai seluruh siswa.</p>
+                <input type="password" id="adminPassword" placeholder="Sandi: admin123 / prabowo" class="w-64 px-4 py-2.5 rounded-xl border border-slate-300 text-center text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-sky-500 block mx-auto">
+                <div>
+                    <button onclick="verifyAdmin()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs shadow transition-all">
+                        <i class="fa-solid fa-key mr-1"></i> Masuk Panel Rekap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rekap Table & Aggregated Summary Section -->
+            <div id="adminDataSec" class="hidden p-5 overflow-y-auto flex-grow flex flex-col space-y-4">
+                
+                <!-- Aggregate Statistics Overview Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
+                    <div class="bg-sky-50 p-3 rounded-2xl border border-sky-100 flex items-center gap-3">
+                        <div class="bg-sky-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-sky-700 font-bold uppercase tracking-wider block">Total Siswa</span>
+                            <span id="statTotalStudents" class="text-lg font-extrabold text-sky-900">0</span>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                        <div class="bg-emerald-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block">Rata-Rata Nilai</span>
+                            <span id="statAvgScore" class="text-lg font-extrabold text-emerald-900">0</span>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100 flex items-center gap-3">
+                        <div class="bg-amber-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-amber-700 font-bold uppercase tracking-wider block">Nilai Tertinggi</span>
+                            <span id="statHighScore" class="text-lg font-extrabold text-amber-900">0</span>
+                        </div>
+                    </div>
+                    <div class="bg-purple-50 p-3 rounded-2xl border border-purple-100 flex items-center gap-3">
+                        <div class="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold">
+                            <i class="fa-solid fa-bullseye"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-purple-700 font-bold uppercase tracking-wider block">Rata-Rata Akurasi</span>
+                            <span id="statAvgAccuracy" class="text-lg font-extrabold text-purple-900">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Controls Top Bar -->
+                <div class="flex flex-wrap justify-between items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200 shrink-0">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs ml-1"></i>
+                        <input type="text" id="adminSearchInput" onkeyup="filterAdminTable()" placeholder="Cari Nama Siswa atau Kelas..." class="px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-56">
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="sendAllRecapToTeacherEmail()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition-all">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Semua Rekap ke Email Guru
+                        </button>
+                        <button onclick="downloadRekapCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition-all">
+                            <i class="fa-solid fa-file-excel"></i> Unduh Rekap Excel (.csv)
+                        </button>
+                        <button onclick="openConfirmDeleteModal()" class="text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-xl text-xs font-bold border border-rose-200 flex items-center gap-1 transition-all">
+                            <i class="fa-solid fa-trash"></i> Hapus Semua Rekap
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Rekap Table displaying score copies -->
+                <div class="overflow-x-auto border border-slate-200 rounded-2xl flex-grow bg-white">
+                    <table class="w-full text-xs text-left text-slate-600">
+                        <thead class="text-[11px] uppercase bg-slate-100 text-slate-700 border-b border-slate-200 sticky top-0">
+                            <tr>
+                                <th class="p-3">Waktu Pengerjaan</th>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3 text-center">Skor Akhir</th>
+                                <th class="p-3 text-center">Benar/Salah</th>
+                                <th class="p-3 text-center">Akurasi</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3 text-center">Salinan Rekap</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekapTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right flex justify-between items-center shrink-0">
+                <span id="rekapTotalCount" class="text-xs text-slate-500 font-semibold">Total Rekap: 0 Siswa</span>
+                <button onclick="toggleAdminModal(false)" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 px-5 rounded-xl text-xs">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentDetailModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-3 md:p-6">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-left">
+            <div class="p-4 bg-sky-700 text-white flex justify-between items-center">
+                <div>
+                    <h4 id="detailStudentName" class="font-bold text-sm md:text-base">Detail Salinan Rekap Jawaban Siswa</h4>
+                    <p id="detailStudentMeta" class="text-[11px] text-sky-200">Kelas & Skor</p>
+                </div>
+                <button onclick="closeStudentDetailModal()" class="text-white hover:bg-sky-800 rounded-full w-7 h-7 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="studentDetailContent" class="p-5 overflow-y-auto space-y-3 text-xs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmDeleteModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-100 text-center space-y-4">
+            <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-extrabold text-slate-800 mb-1">Konfirmasi Hapus Rekap</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Apakah Anda yakin ingin menghapus <strong class="text-rose-600">SELURUH</strong> salinan rekap nilai siswa yang tersimpan di sistem ini? Tindakan ini tidak dapat dibatalkan!
+                </p>
+            </div>
+            <div class="flex gap-3 justify-center pt-2">
+                <button onclick="closeConfirmDeleteModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition-all">
+                    Batal
+                </button>
+                <button onclick="clearAdminDataConfirmed()" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-trash"></i> Ya, Hapus Semua
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="max-w-5xl mx-auto w-full text-center text-slate-500 text-xs py-3 mt-4">
+        SMP BBM Wanaherang &copy; 2026 - Senam Anak Indonesia Hebat PJOK | Guru: Drs. H. Prabowo
+    </footer>
+
+    <script>
+        let studentData = { name: "", class: "" };
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questions = [];
+        const TEACHER_EMAIL = "heruprabowo31@guru.smp.belajar.id";
+
+        const quizQuestions = [
+            // MISI 1
+            {
+                mission: 1,
+                missionTitle: "Kenali Senam Anak Indonesia Hebat",
+                type: "matching",
+                question: "Pilih pencocokan definisi yang paling tepat mengenai Senam Irama berikut ini:",
+                cards: ["Gerakan Pemanasan", "Gerakan Inti", "Gerakan Pendinginan", "Irama/Musik"],
+                targets: [
+                    { id: "t1", label: "Menurunkan denyut jantung secara bertahap", match: "Gerakan Pendinginan" },
+                    { id: "t2", label: "Meningkatkan suhu tubuh dan menyiapkan otot", match: "Gerakan Pemanasan" },
+                    { id: "t3", label: "Melatih kelentukan, kekuatan, dan koordinasi utama", match: "Gerakan Inti" },
+                    { id: "t4", label: "Panduan tempo dan ritme dalam melangkah", match: "Irama/Musik" }
+                ],
+                explanation: "Pemanasan menaikkan suhu tubuh, gerakan inti melatih kebugaran utama, pendinginan menetralkan otot, dan musik memandu ritme gerak."
+            },
+            {
+                mission: 1,
+                missionTitle: "Kenali Senam Anak Indonesia Hebat",
+                type: "mcq",
+                question: "Unsur utama yang membedakan senam irama (ritmik) dengan jenis senam artistik lainnya adalah...",
+                options: [
+                    "Penggunaan alat-alat berat seperti palang sejajar",
+                    "Kesesuaian harmoni antara gerakan tubuh dengan irama musik",
+                    "Keterampilan melakukan salto udara yang tinggi",
+                    "Kecepatan berlari sebelum melakukan loncatan"
+                ],
+                answer: "Kesesuaian harmoni antara gerakan tubuh dengan irama musik",
+                explanation: "Ciri khas utama senam irama adalah harmonisasi antara ritme musik pendukung dan ritme gerakan tubuh."
+            },
+            {
+                mission: 1,
+                missionTitle: "Kenali Senam Anak Indonesia Hebat",
+                type: "mcq",
+                question: "Slogan utama Senam Anak Indonesia Hebat mengajak kita untuk...",
+                options: [
+                    "Menjadi atlet profesional sejak dini",
+                    "Menjaga kesehatan tubuh secara mandiri dan aktif bergerak",
+                    "Mengikuti perlombaan senam tingkat nasional",
+                    "Berlatih senam selama 5 jam setiap hari"
+                ],
+                answer: "Menjaga kesehatan tubuh secara mandiri dan aktif bergerak",
+                explanation: "Kesehatan harus kita jaga sendiri melalui aktivitas jasmani yang rutin dan teratur."
+            },
+            {
+                mission: 1,
+                missionTitle: "Kenali Senam Anak Indonesia Hebat",
+                type: "mcq",
+                question: "Di bawah ini yang BUKAN merupakan manfaat melakukan senam irama secara rutin adalah...",
+                options: [
+                    "Meningkatkan kelentukan dan daya tahan jantung",
+                    "Melatih koordinasi anggota tubuh",
+                    "Menyebabkan cedera otot permanen",
+                    "Memperbaiki postur dan kebugaran jasmani"
+                ],
+                answer: "Menyebabkan cedera otot permanen",
+                explanation: "Senam irama yang dilakukan dengan teknik yang benar meningkatkan kebugaran dan tidak menyebabkan cedera permanen."
+            },
+            {
+                mission: 1,
+                missionTitle: "Kenali Senam Anak Indonesia Hebat",
+                type: "mcq",
+                question: "Aktivitas senam irama Senam Anak Indonesia Hebat dirancang khusus untuk Fase D (SMP) dengan tujuan...",
+                options: [
+                    "Membentuk otot binaraga secara cepat",
+                    "Mengembangkan karakter positif, disiplin, dan kebugaran siswa",
+                    "Menggantikan seluruh mata pelajaran sains",
+                    "Melatih ketahanan fisik tanpa istirahat"
+                ],
+                answer: "Mengembangkan karakter positif, disiplin, dan kebugaran siswa",
+                explanation: "Pembelajaran PJOK Fase D bertujuan memupuk kebiasaan hidup sehat, ketangkasan, serta nilai karakter gembira dan disiplin."
+            },
+
+            // MISI 2
+            {
+                mission: 2,
+                missionTitle: "Detektif Gerak Senam",
+                type: "mcq",
+                question: "Budi melangkah kaki kanan ke depan, lalu menyusulkan kaki kiri ke samping kaki kanan, kemudian melangkah bergantian. Gerakan kaki dasar ini disebut...",
+                options: ["Langkah Biasa (Loppas)", "Langkah Rapat (Bytreppas)", "Langkah Keseimbangan (Balanspas)", "Langkah Lingkar (Parade)"],
+                answer: "Langkah Rapat (Bytreppas)",
+                explanation: "Bytreppas adalah gerakan langkah rapat di mana kaki pengikut menutup merapat ke kaki tumpu."
+            },
+            {
+                mission: 2,
+                missionTitle: "Detektif Gerak Senam",
+                type: "mcq",
+                question: "Ketika kedua lengan diayun dari samping pinggul berputar melewati atas kepala secara lentur, jenis ayunan lengan ini memanfaatkan sendi...",
+                options: ["Sendi Engsel pada lutut", "Sendi Peluru pada bahu", "Sendi Putar pada leher", "Sendi Pelana pada ibu jari"],
+                answer: "Sendi Peluru pada bahu",
+                explanation: "Ayunan lengan penuh/putar mengandalkan sendi peluru bahu yang memiliki ruang gerak ke segala arah."
+            },
+            {
+                mission: 2,
+                missionTitle: "Detektif Gerak Senam",
+                type: "mcq",
+                question: "Pada gerakan ayunan dua lengan ke depan dan ke belakang, posisi lutut yang benar saat lengan diayun adalah...",
+                options: ["Kaku dan dikunci rapat", "Ngeper (mengeper/fleksibel)", "Melompat setinggi-tingginya", "Ditekuk hingga bersimpuh"],
+                answer: "Ngeper (mengeper/fleksibel)",
+                explanation: "Gerakan ngeper (flexing) pada lutut berfungsi meredam hentakan dan menjaga irama kelentukan tubuh."
+            },
+            {
+                mission: 2,
+                missionTitle: "Detektif Gerak Senam",
+                type: "mcq",
+                question: "Detektif mengamati siswa melakukan gerakan mengayun lengan silang di depan dada. Posisi badan yang tepat untuk mendukung gerakan ini adalah...",
+                options: ["Membungkuk kaku ke depan", "Tegak dengan tumpuan berat badan terbagi seimbang", "Miring ke samping kanan terus menerus", "Duduk bersila di lantai"],
+                answer: "Tegak dengan tumpuan berat badan terbagi seimbang",
+                explanation: "Badan tegak dan rileks memastikan ayunan lengan silang dapat berayun luas tanpa mengganggu keseimbangan."
+            },
+            {
+                mission: 2,
+                missionTitle: "Detektif Gerak Senam",
+                type: "mcq",
+                question: "Apa akibatnya jika seorang siswa melakukan senam irama tidak sesuai dengan ketukan tempo musik?",
+                options: [
+                    "Gerakan terlihat harmonis dan indah",
+                    "Gerakan menjadi tidak kompak dan kehilangan keharmonisan irama",
+                    "Nilai kebugaran meningkat dua kali lipat",
+                    "Musik akan otomatis berhenti sendiri"
+                ],
+                answer: "Gerakan menjadi tidak kompak dan kehilangan keharmonisan irama",
+                explanation: "Harmoni ritme merupakan inti senam irama, ketidaksesuaian dengan ketukan membuat koreografi tidak serasi."
+            },
+
+            // MISI 3
+            {
+                mission: 3,
+                missionTitle: "Susun Urutan Gerak",
+                type: "sequence",
+                question: "Susunlah tahapan pelaksanaan Rangkaian Senam Irama secara runtut dan benar dari atas ke bawah:",
+                items: [
+                    "Lakukan gerakan pemanasan dan peregangan statis/dinamis",
+                    "Lakukan gerakan inti mengikuti ketukan musik utama",
+                    "Lakukan gerakan pendinginan dan penguluran otot kembali",
+                    "Pemeriksaan kesiapan fisik dan berdoa sebelum aktivitas"
+                ],
+                correctOrder: [
+                    "Pemeriksaan kesiapan fisik dan berdoa sebelum aktivitas",
+                    "Lakukan gerakan pemanasan dan peregangan statis/dinamis",
+                    "Lakukan gerakan inti mengikuti ketukan musik utama",
+                    "Lakukan gerakan pendinginan dan penguluran otot kembali"
+                ],
+                explanation: "Sistematika latihan senam yang aman dan ilmiah dimulai dari persiapan/doa -> pemanasan -> gerakan inti -> pendinginan."
+            },
+            {
+                mission: 3,
+                missionTitle: "Susun Urutan Gerak",
+                type: "sequence",
+                question: "Urutkan tahapan melakukan Ayunan Satu Lengan ke Depan dan Belakang yang benar:",
+                items: [
+                    "Ayunkan lengan kanan ke belakang diikuti lutut mengeper",
+                    "Sikap awal berdiri tegak, kedua lengan lurus di samping badan",
+                    "Ayunkan kembali lengan kanan ke depan",
+                    "Ayunkan lengan kiri ke belakang secara bergantian"
+                ],
+                correctOrder: [
+                    "Sikap awal berdiri tegak, kedua lengan lurus di samping badan",
+                    "Ayunkan lengan kanan ke belakang diikuti lutut mengeper",
+                    "Ayunkan kembali lengan kanan ke depan",
+                    "Ayunkan lengan kiri ke belakang secara bergantian"
+                ],
+                explanation: "Gerakan diawali dari posisi siap berdiri tegak, lalu mengayunkan salah satu lengan bergantian mengikuti irama."
+            },
+            {
+                mission: 3,
+                missionTitle: "Susun Urutan Gerak",
+                type: "mcq",
+                question: "Mengapa gerakan pendinginan TIDAK BOLEH dilewati setelah selesai melakukan senam inti berintensitas tinggi?",
+                options: [
+                    "Agar durasi waktu olahraga menjadi lebih singkat",
+                    "Untuk mencegah penumpukan asam laktat dan pusing secara mendadak",
+                    "Karena musik pendinginan adalah lagu favorit",
+                    "Agar baju olahraga cepat kering"
+                ],
+                answer: "Untuk mencegah penumpukan asam laktat dan pusing secara mendadak",
+                explanation: "Pendinginan membantu mengembalikan denyut jantung ke batas normal secara bertahap dan mencegah pusing/pegal berlebih."
+            },
+            {
+                mission: 3,
+                missionTitle: "Susun Urutan Gerak",
+                type: "mcq",
+                question: "Urutan gerakan kaki 'Langkah Biasa' dimulai dari sikap awal berdiri tegak, kemudian langkah pertama diluncurkan dengan...",
+                options: [
+                    "Tumit mendarat terlebih dahulu di lantai",
+                    "Ujung jari kaki mendarat secara menghentak keras",
+                    "Melompat dengan kedua lutut ditekuk tinggi",
+                    "Berlari secepat mungkin"
+                ],
+                answer: "Tumit mendarat terlebih dahulu di lantai",
+                explanation: "Pada teknik langkah biasa (loppas), tumit menyentuh lantai terlebih dahulu lalu dilanjutkan ke telapak kaki."
+            },
+            {
+                mission: 3,
+                missionTitle: "Susun Urutan Gerak",
+                type: "mcq",
+                question: "Dalam menyusun koreografi senam irama kelompok, hal pertama yang paling tepat ditentukan adalah...",
+                options: [
+                    "Membeli seragam senam baru",
+                    "Pemilihan tempo musik dan penyesuaian durasi pemanasan hingga pendinginan",
+                    "Menentukan juara lomba",
+                    "Memilih tempat panggung yang mahal"
+                ],
+                answer: "Pemilihan tempo musik dan penyesuaian durasi pemanasan hingga pendinginan",
+                explanation: "Dasar koreografi senam irama adalah struktur ritme lagu yang akan disesuaikan dengan intensitas gerakan."
+            },
+
+            // MISI 4
+            {
+                mission: 4,
+                missionTitle: "Pecahkan Masalah",
+                type: "mcq",
+                question: "Siswa kelas VIII bernama Rian sering merasa terengah-engah dan cepat lelah di pertengahan sesi gerakan inti senam. Solusi analisis PJOK terbaik untuk Rian adalah...",
+                options: [
+                    "Menghentikan olahraga dan tidak usah ikut PJOK lagi",
+                    "Melakukan pemanasan dengan baik serta mengontrol intensitas pernapasan sesuai ritme musik",
+                    "Minum air es sebanyak-banyaknya di tengah latihan berlangsung",
+                    "Memaksa diri berlari secepat mungkin tanpa henti"
+                ],
+                answer: "Melakukan pemanasan dengan baik serta mengontrol intensitas pernapasan sesuai ritme musik",
+                explanation: "Pemanasan yang memadai menyiapkan sistem kardiovaskular, sedangkan ritme napas teratur mencegah rasa letih dini."
+            },
+            {
+                mission: 4,
+                missionTitle: "Pecahkan Masalah",
+                type: "mcq",
+                question: "Siti mengalami kram ringan di bagian betis saat melakukan gerakan melompat pada senam irama. Tindakan pertolongan pertama yang tepat adalah...",
+                options: [
+                    "Memukul-mukul otot betis dengan keras",
+                    "Melakukan penguluran (stretching) perlahan pada otot betis dan istirahat sejenak",
+                    "Melanjutkan lompatan lebih tinggi agar kram hilang",
+                    "Mengompres betis menggunakan air panas mendidih"
+                ],
+                answer: "Melakukan penguluran (stretching) perlahan pada otot betis dan istirahat sejenak",
+                explanation: "Penguluran halus/stretching serta istirahat membantu merelaksasikan spasme otot kram secara aman."
+            },
+            {
+                mission: 4,
+                missionTitle: "Pecahkan Masalah",
+                type: "mcq",
+                question: "Saat latihan kelompok, dua anggota tim tidak kompak karena salah satu bergerak terlalu cepat mendahului tempo lagu. Sikap pemecahan masalah terbaik kelompok adalah...",
+                options: [
+                    "Mencoret siswa tersebut dari kelompok",
+                    "Menghitung ketukan bersama (1-2-3-4) agar irama gerakan padu dengan musik",
+                    "Dimatikan saja musiknya dan senam tanpa irama",
+                    "Saling menyalahkan di depan guru"
+                ],
+                answer: "Menghitung ketukan bersama (1-2-3-4) agar irama gerakan padu dengan musik",
+                explanation: "Penghitungan tempo ketukan membantu menyamakan persepsi ritme antaranggota kelompok senam."
+            },
+            {
+                mission: 4,
+                missionTitle: "Pecahkan Masalah",
+                type: "mcq",
+                question: "SMP BBM Wanaherang mengadakan Senam Bersama di lapangan. Mengapa pengaturan jarak antar siswa (rentangkan kedua lengan) sangat penting dilakukan sebelum senam dimulai?",
+                options: [
+                    "Agar lapangan terlihat penuh dan bagus di foto",
+                    "Mencegah benturan/benturan antar siswa saat mengayunkan lengan dan melangkah",
+                    "Supaya siswa tidak bisa berbicara dengan temannya",
+                    "Syarat utama formalitas saja"
+                ],
+                answer: "Mencegah benturan/benturan antar siswa saat mengayunkan lengan dan melangkah",
+                explanation: "Menjaga ruang gerak (safety zone) mencegah terjadinya cedera akibat benturan antar peserta senam."
+            },
+            {
+                mission: 4,
+                missionTitle: "Pecahkan Masalah",
+                type: "mcq",
+                question: "Andi mengeluh nyeri sendi lutut setelah senam karena selalu mendarat menggunakan tumit secara keras saat gerakan melompat. Saran perbaikan gerakan untuk Andi adalah...",
+                options: [
+                    "Mendarat menggunakan bola kaki/ujung kaki terlebih dahulu diikuti lutut mengeper",
+                    "Mendarat dengan posisi lutut lurus kaku",
+                    "Mendarat dengan duduk terhenyak",
+                    "Menggunakan sepatu yang berukuran kekecilan"
+                ],
+                answer: "Mendarat menggunakan bola kaki/ujung kaki terlebih dahulu diikuti lutut mengeper",
+                explanation: "Mendarat dengan bola kaki dan meredam dengan flexi lutut (ngeper) mendistribusikan beban hentakan secara aman."
+            },
+
+            // MISI 5
+            {
+                mission: 5,
+                missionTitle: "Tantangan Master",
+                type: "mcq",
+                question: "Gabungan antara koordinasi ayunan dua lengan melingkar di atas kepala dengan langkah silang (kruispas) memerlukan fungsi kerja organ kardiovaskular dan komponen fisik berupa...",
+                options: [
+                    "Daya ledak dan ketahanan napas saja",
+                    "Keseimbangan, kelentukan, serta koordinasi saraf-otot yang tinggi",
+                    "Kekuatan tumpuan jari tangan",
+                    "Kecepatan reaksi suara"
+                ],
+                answer: "Keseimbangan, kelentukan, serta koordinasi saraf-otot yang tinggi",
+                explanation: "Rangkaian gerak kompleks menggabungkan kelentukan bahu, keseimbangan tumpuan, serta koordinasi ketukan."
+            },
+            {
+                mission: 5,
+                missionTitle: "Tantangan Master",
+                type: "matching",
+                question: "Cocokkan Jenis Senam Irama berdasarkan penggunaan alat pendukungnya:",
+                cards: ["Senam Pita", "Senam Gada", "Senam Simpai/Hula Hoop", "Senam Tanpa Alat"],
+                targets: [
+                    { id: "tm1", label: "Mengutamakan pilihan pilinan dan kibatan gelombang estetik", match: "Senam Pita" },
+                    { id: "tm2", label: "Menggunakan lingkaran berbahan rotan/plastik", match: "Senam Simpai/Hula Hoop" },
+                    { id: "tm3", label: "Memanfaatkan alat berbentuk tongkat pemukul kecil", match: "Senam Gada" },
+                    { id: "tm4", label: "Murni mengandalkan ketangkasan dan estetika anggota tubuh", match: "Senam Tanpa Alat" }
+                ],
+                explanation: "Masing-masing alat senam ritmik memiliki karakteristik teknis dan nilai estetika gerakan yang spesifik."
+            },
+            {
+                mission: 5,
+                missionTitle: "Tantangan Master",
+                type: "mcq",
+                question: "Tercatat data kebugaran: Siswa A melakukan senam irama 3x seminggu (skor denyut nadi pemulihan cepat), Siswa B tidak pernah senam (denyut nadi tetap tinggi lama). Kesimpulan ilmiah PJOK yang tepat adalah...",
+                options: [
+                    "Senam irama secara teratur meningkatkan efisiensi kerja jantung dan pemulihan tubuh",
+                    "Olahraga tidak berpengaruh pada denyut jantung",
+                    "Siswa B memiliki kebugaran lebih baik dari Siswa A",
+                    "Denyut nadi tidak ada hubungannya dengan kebugaran"
+                ],
+                answer: "Senam irama secara teratur meningkatkan efisiensi kerja jantung dan pemulihan tubuh",
+                explanation: "Denyut nadi yang cepat kembali normal setelah latihan menandakan derajat kebugaran kardiovaskular yang unggul."
+            },
+            {
+                mission: 5,
+                missionTitle: "Tantangan Master",
+                type: "mcq",
+                question: "Komposisi lagu Senam Anak Indonesia Hebat memiliki birama 4/4. Artinya dalam setiap ketukan hitungan senam terdapat...",
+                options: [
+                    "3 ketukan dalam satu nada",
+                    "4 ketukan dimana setiap ketukan bernilai seperempat",
+                    "5 gerakan melompat serentak",
+                    "2 hitungan tanpa nada"
+                ],
+                answer: "4 ketukan dimana setiap ketukan bernilai seperempat",
+                explanation: "Birama 4/4 adalah standar irama riang di mana terdapat 4 ketukan teratur dalam satu ruas birama."
+            },
+            {
+                mission: 5,
+                missionTitle: "Tantangan Master",
+                type: "mcq",
+                question: "Nilai-nilai karakter utama Pancasila yang langsung terpatri saat kalian melakukan Senam Anak Indonesia Hebat bersama-sama adalah...",
+                options: [
+                    "Sifat egois dan mau menang sendiri",
+                    "Gotong royong, kedisiplinan, dan rasa cinta kesehatan diri serta bangsa",
+                    "Sikap acuh tak acuh terhadap kebersihan",
+                    "Ketergantungan pada orang lain"
+                ],
+                answer: "Gotong royong, kedisiplinan, dan rasa cinta kesehatan diri serta bangsa",
+                explanation: "Senam bersama memupuk semangat kebersamaan, kepatuhan aturan ritme, dan kesadaran membangun jiwa yang sehat."
+            }
+        ];
+
+        function playSound(type) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(130, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch (e) {
+                // Audio fallback
+            }
+        }
+
+        function startQuiz() {
+            const name = document.getElementById("inputStudentName").value.trim();
+            const cls = document.getElementById("inputStudentClass").value;
+
+            if (!name || !cls) {
+                alert("Harap isi Nama Lengkap dan Pilih Kelas terlebih dahulu!");
+                return;
+            }
+
+            studentData = { name, class: cls };
+            localStorage.setItem("pjok_studentName", name);
+            localStorage.setItem("pjok_studentClass", cls);
+
+            document.getElementById("headerStudentName").textContent = name;
+            document.getElementById("headerStudentClass").textContent = cls;
+            document.getElementById("userInfoHeader").classList.remove("hidden");
+
+            questions = JSON.parse(JSON.stringify(quizQuestions));
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            document.getElementById("landingPage").classList.add("hidden");
+            document.getElementById("resultPage").classList.add("hidden");
+            document.getElementById("quizPage").classList.remove("hidden");
+            document.getElementById("quizPage").classList.add("flex");
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            const totalQ = questions.length;
+
+            document.getElementById("missionBadge").textContent = `MISI ${q.mission}`;
+            document.getElementById("missionTitle").textContent = q.missionTitle;
+            document.getElementById("missionSubtitle").textContent = `Soal ${currentQuestionIndex + 1} dari ${totalQ}`;
+            document.getElementById("qIndexBadge").textContent = `Soal ${currentQuestionIndex + 1}`;
+            document.getElementById("questionText").textContent = q.question;
+            document.getElementById("scoreDisplay").textContent = score;
+
+            const progress = ((currentQuestionIndex) / totalQ) * 100;
+            document.getElementById("progressBar").style.width = `${progress}%`;
+
+            document.getElementById("feedbackBanner").classList.add("hidden");
+            document.getElementById("btnNext").disabled = true;
+
+            const interactiveArea = document.getElementById("interactiveArea");
+            interactiveArea.innerHTML = "";
+
+            if (q.type === "mcq") {
+                renderMCQ(q, interactiveArea);
+            } else if (q.type === "matching") {
+                renderMatching(q, interactiveArea);
+            } else if (q.type === "sequence") {
+                renderSequence(q, interactiveArea);
+            }
+        }
+
+        function renderMCQ(q, container) {
+            document.getElementById("interactionHint").textContent = "Pilih salah satu jawaban yang menurutmu paling tepat.";
+            const grid = document.createElement("div");
+            grid.className = "grid grid-cols-1 md:grid-cols-2 gap-3";
+
+            const options = [...q.options].sort(() => Math.random() - 0.5);
+
+            options.forEach((opt) => {
+                const btn = document.createElement("button");
+                btn.className = "p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 transition-all text-left font-medium text-xs md:text-sm text-slate-700 shadow-sm flex items-start gap-3 active:scale-98 cursor-pointer";
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 border border-slate-300 font-bold flex items-center justify-center text-xs shrink-0">•</span><span>${opt}</span>`;
+                
+                btn.onclick = () => {
+                    const allBtns = grid.querySelectorAll("button");
+                    allBtns.forEach(b => b.disabled = true);
+
+                    const isCorrect = (opt === q.answer);
+                    if (isCorrect) {
+                        btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-medium text-xs md:text-sm shadow-sm flex items-start gap-3";
+                        score += 4;
+                        playSound('correct');
+                        showFeedback(true, `<strong>Benar! (+4 Poin)</strong> ${q.explanation}`);
+                    } else {
+                        btn.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-900 font-medium text-xs md:text-sm shadow-sm flex items-start gap-3";
+                        playSound('wrong');
+                        showFeedback(false, `<strong>Kurang Tepat.</strong> Jawaban benar: <strong>${q.answer}</strong>. <br><span class="text-xs font-normal">${q.explanation}</span>`);
+                    }
+
+                    userAnswers.push({
+                        questionText: q.question,
+                        userAns: opt,
+                        correctAns: q.answer,
+                        isCorrect: isCorrect
+                    });
+
+                    document.getElementById("scoreDisplay").textContent = score;
+                    document.getElementById("btnNext").disabled = false;
+                };
+
+                grid.appendChild(btn);
+            });
+
+            container.appendChild(grid);
+        }
+
+        function renderMatching(q, container) {
+            document.getElementById("interactionHint").textContent = "Seret (Drag) kartu jawaban di atas ke dalam kotak tujuan yang berkesesuaian di bawah, atau ketuk kartu lalu ketuk kotak tujuan.";
+            
+            const mainDiv = document.createElement("div");
+            mainDiv.className = "space-y-4";
+
+            const cardsDiv = document.createElement("div");
+            cardsDiv.className = "flex flex-wrap gap-2 p-3 bg-sky-50/80 rounded-2xl border border-sky-200 min-h-[60px] items-center justify-center";
+            cardsDiv.id = "cardSourcePool";
+
+            let selectedCardText = null;
+            let selectedCardElem = null;
+            let dropMatches = {};
+
+            const shuffledCards = [...q.cards].sort(() => Math.random() - 0.5);
+            shuffledCards.forEach((cText, idx) => {
+                const card = document.createElement("div");
+                card.className = "drag-card bg-sky-600 text-white font-bold px-3 py-2 rounded-xl text-xs shadow hover:bg-sky-700 select-none cursor-pointer transition-transform";
+                card.textContent = cText;
+                card.draggable = true;
+                card.id = `dragCard_${idx}`;
+                
+                // HTML5 Drag Event Handlers
+                card.ondragstart = (e) => {
+                    e.dataTransfer.setData("text/plain", cText);
+                    e.dataTransfer.setData("cardId", card.id);
+                    card.classList.add("opacity-50");
+                };
+
+                card.ondragend = () => {
+                    card.classList.remove("opacity-50");
+                };
+
+                // Fallback Touch / Click Handler (For Mobile & Tablet compatibility)
+                card.onclick = () => {
+                    const allCards = cardsDiv.querySelectorAll(".drag-card");
+                    allCards.forEach(c => c.classList.remove("ring-4", "ring-amber-400", "scale-105"));
+
+                    if (selectedCardElem === card) {
+                        selectedCardText = null;
+                        selectedCardElem = null;
+                    } else {
+                        selectedCardText = cText;
+                        selectedCardElem = card;
+                        card.classList.add("ring-4", "ring-amber-400", "scale-105");
+                    }
+                };
+
+                cardsDiv.appendChild(card);
+            });
+
+            const targetsGrid = document.createElement("div");
+            targetsGrid.className = "grid grid-cols-1 md:grid-cols-2 gap-3";
+
+            q.targets.forEach((tgt) => {
+                const zoneBox = document.createElement("div");
+                zoneBox.className = "drop-zone p-3 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex flex-col justify-between min-h-[90px] cursor-pointer transition-all hover:border-sky-400";
+                
+                zoneBox.innerHTML = `
+                    <div class="text-xs text-slate-600 font-medium mb-2 pointer-events-none"><i class="fa-solid fa-bullseye text-sky-500 mr-1"></i> ${tgt.label}</div>
+                    <div id="drop_${tgt.id}" class="target-slot p-2 rounded-xl border border-slate-200 bg-slate-50 text-center text-xs font-bold text-slate-400 pointer-events-none transition-all">
+                        Drop / Ketuk Kartu Di Sini
+                    </div>
+                `;
+
+                // Drag & Drop Handlers
+                zoneBox.ondragover = (e) => {
+                    e.preventDefault();
+                    zoneBox.classList.add("drag-over");
+                };
+
+                zoneBox.ondragleave = () => {
+                    zoneBox.classList.remove("drag-over");
+                };
+
+                const handleDropLogic = (cardText, cardElem) => {
+                    const slot = zoneBox.querySelector(`.target-slot`);
+                    
+                    // Restore previously placed card in this slot back to pool if any
+                    if (dropMatches[tgt.id]) {
+                        const prevCardText = dropMatches[tgt.id];
+                        const hiddenCards = Array.from(cardsDiv.children);
+                        const restoredCard = hiddenCards.find(c => c.textContent === prevCardText && c.style.display === "none");
+                        if (restoredCard) restoredCard.style.display = "block";
+                    }
+
+                    slot.className = "target-slot p-2 rounded-xl bg-sky-600 text-white font-bold text-xs text-center shadow-sm";
+                    slot.textContent = cardText;
+                    dropMatches[tgt.id] = cardText;
+
+                    if (cardElem) {
+                        cardElem.style.display = "none";
+                        cardElem.classList.remove("ring-4", "ring-amber-400", "scale-105");
+                    }
+
+                    selectedCardText = null;
+                    selectedCardElem = null;
+
+                    // Auto Check when all targets are filled
+                    if (Object.keys(dropMatches).length === q.targets.length) {
+                        evaluateMatching(q, dropMatches);
+                    }
+                };
+
+                zoneBox.ondrop = (e) => {
+                    e.preventDefault();
+                    zoneBox.classList.remove("drag-over");
+                    const cardText = e.dataTransfer.getData("text/plain");
+                    const cardId = e.dataTransfer.getData("cardId");
+                    const cardElem = document.getElementById(cardId);
+                    
+                    if (cardText) {
+                        handleDropLogic(cardText, cardElem);
+                    }
+                };
+
+                // Tap / Click Handler for Target Slot
+                zoneBox.onclick = () => {
+                    if (selectedCardText && selectedCardElem) {
+                        handleDropLogic(selectedCardText, selectedCardElem);
+                    }
+                };
+
+                targetsGrid.appendChild(zoneBox);
+            });
+
+            mainDiv.appendChild(cardsDiv);
+            mainDiv.appendChild(targetsGrid);
+            container.appendChild(mainDiv);
+        }
+
+        function evaluateMatching(q, matches) {
+            let correctCount = 0;
+            q.targets.forEach(tgt => {
+                if (matches[tgt.id] === tgt.match) {
+                    correctCount++;
+                }
+            });
+
+            const isAllCorrect = (correctCount === q.targets.length);
+            const gainedScore = Math.round((correctCount / q.targets.length) * 4);
+            score += gainedScore;
+
+            if (isAllCorrect) {
+                playSound('correct');
+                showFeedback(true, `<strong>Luar Biasa! Semua Cocok (+${gainedScore} Poin)</strong>. ${q.explanation}`);
+            } else {
+                playSound('wrong');
+                showFeedback(false, `<strong>Berhasil Memasang (${correctCount}/${q.targets.length} Benar, +${gainedScore} Poin).</strong> <br><span class="text-xs font-normal">${q.explanation}</span>`);
+            }
+
+            userAnswers.push({
+                questionText: q.question,
+                userAns: `Berhasil mencocokkan ${correctCount} dari ${q.targets.length}`,
+                correctAns: "Semua Pasangan Cocok",
+                isCorrect: isAllCorrect
+            });
+
+            document.getElementById("scoreDisplay").textContent = score;
+            document.getElementById("btnNext").disabled = false;
+        }
+
+        function renderSequence(q, container) {
+            document.getElementById("interactionHint").textContent = "Gunakan tombol panah di samping kartu untuk mengurutkan tahapan dari atas ke bawah secara logis.";
+            
+            const listDiv = document.createElement("div");
+            listDiv.className = "space-y-2 max-w-xl mx-auto";
+
+            let currentItems = [...q.items].sort(() => Math.random() - 0.5);
+
+            function updateListUI() {
+                listDiv.innerHTML = "";
+                currentItems.forEach((itemText, idx) => {
+                    const row = document.createElement("div");
+                    row.className = "sortable-item p-3 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-between text-xs md:text-sm font-semibold text-slate-700";
+                    
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-xl bg-sky-100 text-sky-800 font-extrabold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
+                            <span>${itemText}</span>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            ${idx > 0 ? `<button onclick="moveSeq(${idx}, -1)" class="w-7 h-7 bg-slate-100 hover:bg-sky-100 text-slate-600 hover:text-sky-700 rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-arrow-up text-xs"></i></button>` : ''}
+                            ${idx < currentItems.length - 1 ? `<button onclick="moveSeq(${idx}, 1)" class="w-7 h-7 bg-slate-100 hover:bg-sky-100 text-slate-600 hover:text-sky-700 rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-arrow-down text-xs"></i></button>` : ''}
+                        </div>
+                    `;
+                    listDiv.appendChild(row);
+                });
+            }
+
+            window.moveSeq = (fromIdx, dir) => {
+                const toIdx = fromIdx + dir;
+                const temp = currentItems[fromIdx];
+                currentItems[fromIdx] = currentItems[toIdx];
+                currentItems[toIdx] = temp;
+                updateListUI();
+            };
+
+            updateListUI();
+
+            const checkBtn = document.createElement("button");
+            checkBtn.className = "w-full mt-4 bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2 cursor-pointer";
+            checkBtn.innerHTML = `<i class="fa-solid fa-check"></i> Periksa Urutan Gerak`;
+
+            checkBtn.onclick = () => {
+                checkBtn.disabled = true;
+                let isCorrect = true;
+                for (let i = 0; i < q.correctOrder.length; i++) {
+                    if (currentItems[i] !== q.correctOrder[i]) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+
+                if (isCorrect) {
+                    score += 4;
+                    playSound('correct');
+                    showFeedback(true, `<strong>Urutan Sempurna! (+4 Poin)</strong> ${q.explanation}`);
+                } else {
+                    playSound('wrong');
+                    showFeedback(false, `<strong>Urutan Masih Belum Tepat.</strong> <br><span class="text-xs font-normal">${q.explanation}</span>`);
+                }
+
+                userAnswers.push({
+                    questionText: q.question,
+                    userAns: currentItems.join(" ➔ "),
+                    correctAns: q.correctOrder.join(" ➔ "),
+                    isCorrect: isCorrect
+                });
+
+                document.getElementById("scoreDisplay").textContent = score;
+                document.getElementById("btnNext").disabled = false;
+            };
+
+            container.appendChild(listDiv);
+            container.appendChild(checkBtn);
+        }
+
+        function showFeedback(isSuccess, htmlContent) {
+            const banner = document.getElementById("feedbackBanner");
+            const icon = document.getElementById("feedbackIcon");
+            const text = document.getElementById("feedbackText");
+
+            banner.classList.remove("hidden", "bg-emerald-50", "border-emerald-200", "text-emerald-900", "bg-rose-50", "border-rose-200", "text-rose-900");
+
+            if (isSuccess) {
+                banner.classList.add("bg-emerald-50", "border", "border-emerald-200", "text-emerald-900", "animate-success");
+                icon.className = "fa-solid fa-circle-check text-emerald-600 text-xl shrink-0";
+            } else {
+                banner.classList.add("bg-rose-50", "border", "border-rose-200", "text-rose-900");
+                icon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl shrink-0";
+            }
+
+            text.innerHTML = htmlContent;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById("quizPage").classList.add("hidden");
+            document.getElementById("quizPage").classList.remove("flex");
+            document.getElementById("resultPage").classList.remove("hidden");
+
+            const totalQ = questions.length;
+            const correctCount = userAnswers.filter(a => a.isCorrect).length;
+            const wrongCount = totalQ - correctCount;
+            const finalScore = Math.min(100, Math.round((score / (totalQ * 4)) * 100));
+            const accuracyNum = Math.round((correctCount / totalQ) * 100);
+
+            document.getElementById("resStudentName").textContent = studentData.name;
+            document.getElementById("resStudentClass").textContent = `${studentData.class} | SMP BBM Wanaherang`;
+
+            document.getElementById("resFinalScore").textContent = finalScore;
+            document.getElementById("resCorrectCount").textContent = correctCount;
+            document.getElementById("resWrongCount").textContent = wrongCount;
+            document.getElementById("resPercentage").textContent = `${accuracyNum}%`;
+
+            let category = "";
+            let motivation = "";
+
+            if (finalScore >= 90) {
+                category = "Master Berpikir Komputasional";
+                motivation = "Luar Biasa! Pemahamanmu mengenai Senam Irama dan Gerak Ritmik sangat sempurna. Pertahankan prestasi dan kebugaranmu!";
+            } else if (finalScore >= 80) {
+                category = "Sangat Baik";
+                motivation = "Sangat Bagus! Kamu menguasai sebagian besar gerakan dan analisis irama dengan teliti.";
+            } else if (finalScore >= 70) {
+                category = "Baik";
+                motivation = "Bagus! Kamu sudah memahami konsep dasar PJOK dengan baik, tingkatkan latihan fisikmu.";
+            } else if (finalScore >= 60) {
+                category = "Cukup";
+                motivation = "Cukup Baik. Pelajari kembali materi senam irama agar gerakan dan pemahamanmu makin mantap.";
+            } else {
+                category = "Perlu Latihan Lagi";
+                motivation = "Jangan berkecil hati! Mari pelajari kembali pembahasan soal dan berlatih gerakan senam secara rutin.";
+            }
+
+            document.getElementById("resCategory").textContent = category;
+            document.getElementById("resMotivation").textContent = `"${motivation}"`;
+
+            saveQuizRecord({
+                id: 'REC_' + Date.now(),
+                timestamp: new Date().toLocaleString('id-ID'),
+                name: studentData.name,
+                class: studentData.class,
+                score: finalScore,
+                correct: correctCount,
+                wrong: wrongCount,
+                accuracy: `${accuracyNum}%`,
+                accuracyNum: accuracyNum,
+                category: category,
+                answers: userAnswers
+            });
+
+            populateDiscussion();
+            prepareEmailTextForCurrentStudent(finalScore, correctCount, wrongCount, accuracyNum, category);
+        }
+
+        function saveQuizRecord(record) {
+            try {
+                let history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+                history.unshift(record);
+                localStorage.setItem("pjok_quiz_rekap", JSON.stringify(history));
+            } catch (e) {
+                console.error("Gagal menyimpan rekap ke LocalStorage", e);
+            }
+        }
+
+        function prepareEmailTextForCurrentStudent(finalScore, correct, wrong, accuracy, category) {
+            const dateStr = new Date().toLocaleString('id-ID');
+            let emailBody = `Yth. Bapak Drs. H. Prabowo, S.Pd (Guru PJOK)\nSMP BBM Wanaherang\n\nBerikut adalah Salinan Hasil Kuis Senam Anak Indonesia Hebat PJOK:\n`;
+            emailBody += `--------------------------------------------------\n`;
+            emailBody += `Waktu Pengerjaan : ${dateStr}\n`;
+            emailBody += `Nama Siswa       : ${studentData.name}\n`;
+            emailBody += `Kelas            : ${studentData.class}\n`;
+            emailBody += `Skor Akhir       : ${finalScore} / 100\n`;
+            emailBody += `Jumlah Benar     : ${correct} Soal\n`;
+            emailBody += `Jumlah Salah     : ${wrong} Soal\n`;
+            emailBody += `Akurasi          : ${accuracy}%\n`;
+            emailBody += `Kategori         : ${category}\n`;
+            emailBody += `--------------------------------------------------\n\n`;
+            emailBody += `Rincian Jawaban Siswa:\n`;
+
+            userAnswers.forEach((a, i) => {
+                emailBody += `${i + 1}. ${a.questionText}\n`;
+                emailBody += `   - Jawaban Siswa : ${a.userAns} [${a.isCorrect ? 'BENAR' : 'SALAH'}]\n`;
+                if (!a.isCorrect) {
+                    emailBody += `   - Kunci Jawaban : ${a.correctAns}\n`;
+                }
+            });
+
+            emailBody += `\nLaporan dikirim otomatis melalui Portal Kuis PJOK Senam Anak Indonesia Hebat.`;
+            
+            document.getElementById("emailBodyPreview").value = emailBody;
+        }
+
+        function openEmailModal() {
+            toggleEmailModal(true);
+        }
+
+        function toggleEmailModal(show) {
+            const modal = document.getElementById("emailModal");
+            const copyText = document.getElementById("copyStatusText");
+            if (copyText) copyText.classList.add("hidden");
+
+            if (show) modal.classList.remove("hidden");
+            else modal.classList.add("hidden");
+        }
+
+        function sendMailtoEmail() {
+            const body = encodeURIComponent(document.getElementById("emailBodyPreview").value);
+            const subject = encodeURIComponent(`[REKAP PJOK] Kuis Senam - ${studentData.name || 'Siswa'} (${studentData.class || 'Kelas'})`);
+            window.location.href = `mailto:${TEACHER_EMAIL}?subject=${subject}&body=${body}`;
+        }
+
+        function copyEmailText() {
+            const textElem = document.getElementById("emailBodyPreview");
+            textElem.select();
+            textElem.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(textElem.value).then(() => {
+                const status = document.getElementById("copyStatusText");
+                status.classList.remove("hidden");
+            }).catch(err => {
+                alert("Gagal menyalin teks: " + err);
+            });
+        }
+
+        function sendAllRecapToTeacherEmail() {
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            if (history.length === 0) {
+                alert("Belum ada salinan rekap siswa yang tersimpan.");
+                return;
+            }
+
+            let fullBody = `Yth. Bapak Drs. H. Prabowo, S.Pd\nGuru Mata Pelajaran PJOK - SMP BBM Wanaherang\n\nBerikut Laporan Rekapitulasi Hasil Kuis Senam Anak Indonesia Hebat Seluruh Siswa:\n\n`;
+            fullBody += `=========================================================================\n`;
+            fullBody += `TOTAL SISWA MENGERJAKAN : ${history.length} Siswa\n`;
+            fullBody += `WAKTU REKAP              : ${new Date().toLocaleString('id-ID')}\n`;
+            fullBody += `=========================================================================\n\n`;
+
+            history.forEach((rec, idx) => {
+                fullBody += `${idx + 1}. ${rec.name} (${rec.class})\n`;
+                fullBody += `   - Skor: ${rec.score}/100 | Benar: ${rec.correct} | Salah: ${rec.wrong} | Akurasi: ${rec.accuracy}\n`;
+                fullBody += `   - Kategori: ${rec.category}\n`;
+                fullBody += `   - Waktu: ${rec.timestamp}\n`;
+                fullBody += `-------------------------------------------------------------------------\n`;
+            });
+
+            document.getElementById("emailBodyPreview").value = fullBody;
+            toggleEmailModal(true);
+        }
+
+        function populateDiscussion() {
+            const container = document.getElementById("discussionContent");
+            let html = "";
+
+            questions.forEach((q, idx) => {
+                const ansObj = userAnswers[idx] || { isCorrect: false, userAns: "-", correctAns: "-" };
+                html += `
+                    <div class="p-4 rounded-2xl border ${ansObj.isCorrect ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}">
+                        <div class="flex items-start gap-2 mb-2 font-bold ${ansObj.isCorrect ? 'text-emerald-900' : 'text-rose-900'}">
+                            <span class="w-5 h-5 rounded-full ${ansObj.isCorrect ? 'bg-emerald-600' : 'bg-rose-600'} text-white text-[10px] flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                            <span>${q.question}</span>
+                        </div>
+                        <div class="text-xs space-y-1 mb-2 text-slate-700 pl-7">
+                            <p>Jawaban Kamu: <strong class="${ansObj.isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${ansObj.userAns}</strong></p>
+                            ${!ansObj.isCorrect ? `<p>Kunci Jawaban: <strong class="text-emerald-800">${q.answer || q.correctAns || 'Sesuai Urutan Logis'}</strong></p>` : ''}
+                        </div>
+                        <div class="text-xs bg-white/80 p-2.5 rounded-xl border border-slate-200 text-slate-600 pl-7">
+                            <strong class="text-sky-700"><i class="fa-solid fa-lightbulb"></i> Pembahasan PJOK:</strong> ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleDiscussionModal(show) {
+            const modal = document.getElementById("discussionModal");
+            if (show) modal.classList.remove("hidden");
+            else modal.classList.add("hidden");
+        }
+
+        function toggleAdminModal(show) {
+            const modal = document.getElementById("adminModal");
+            if (show) {
+                modal.classList.remove("hidden");
+                document.getElementById("adminLoginSec").classList.remove("hidden");
+                document.getElementById("adminDataSec").classList.add("hidden");
+                document.getElementById("adminPassword").value = "";
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+
+        function verifyAdmin() {
+            const pass = document.getElementById("adminPassword").value;
+            if (pass === "admin123" || pass === "prabowo") {
+                document.getElementById("adminLoginSec").classList.add("hidden");
+                document.getElementById("adminDataSec").classList.remove("hidden");
+                renderAdminRekapTable();
+            } else {
+                alert("Kata sandi salah! Gunakan: admin123 atau prabowo");
+            }
+        }
+
+        function goHome() {
+            document.getElementById("resultPage").classList.add("hidden");
+            document.getElementById("quizPage").classList.add("hidden");
+            document.getElementById("quizPage").classList.remove("flex");
+            document.getElementById("landingPage").classList.remove("hidden");
+        }
+
+        function renderAdminRekapTable() {
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            const tbody = document.getElementById("rekapTableBody");
+            
+            const totalStudents = history.length;
+            document.getElementById("rekapTotalCount").textContent = `Total Salinan Rekap: ${totalStudents} Siswa`;
+            document.getElementById("statTotalStudents").textContent = totalStudents;
+
+            if (totalStudents === 0) {
+                document.getElementById("statAvgScore").textContent = "0";
+                document.getElementById("statHighScore").textContent = "0";
+                document.getElementById("statAvgAccuracy").textContent = "0%";
+                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400 font-medium">Belum ada salinan rekap nilai siswa yang tersimpan.</td></tr>`;
+                return;
+            }
+
+            const totalScoreSum = history.reduce((acc, curr) => acc + curr.score, 0);
+            const avgScore = Math.round(totalScoreSum / totalStudents);
+            const highScore = Math.max(...history.map(h => h.score));
+            const totalAccSum = history.reduce((acc, curr) => acc + (curr.accuracyNum || 0), 0);
+            const avgAcc = Math.round(totalAccSum / totalStudents);
+
+            document.getElementById("statAvgScore").textContent = avgScore;
+            document.getElementById("statHighScore").textContent = highScore;
+            document.getElementById("statAvgAccuracy").textContent = `${avgAcc}%`;
+
+            let html = "";
+            history.forEach((rec) => {
+                html += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-3 whitespace-nowrap text-[11px] font-medium text-slate-500">${rec.timestamp}</td>
+                        <td class="p-3 font-bold text-slate-800">${rec.name}</td>
+                        <td class="p-3 font-semibold text-sky-700">${rec.class}</td>
+                        <td class="p-3 text-center font-extrabold text-sky-600 text-sm">${rec.score}</td>
+                        <td class="p-3 text-center text-xs font-semibold"><span class="text-emerald-600">${rec.correct}B</span> / <span class="text-rose-500">${rec.wrong}S</span></td>
+                        <td class="p-3 text-center font-semibold text-emerald-600">${rec.accuracy || '-'}</td>
+                        <td class="p-3"><span class="bg-sky-100 text-sky-800 px-2 py-0.5 rounded-lg text-[10px] font-bold">${rec.category}</span></td>
+                        <td class="p-3 text-center">
+                            <button onclick="viewStudentDetail('${rec.id}')" class="bg-sky-600 hover:bg-sky-700 active:scale-95 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 mx-auto shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-file-lines"></i> Lihat Rekap
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function filterAdminTable() {
+            const query = document.getElementById("adminSearchInput").value.toLowerCase();
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            const filtered = history.filter(h => h.name.toLowerCase().includes(query) || h.class.toLowerCase().includes(query));
+            
+            const tbody = document.getElementById("rekapTableBody");
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Tidak ada salinan rekap yang cocok dengan pencarian.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            filtered.forEach((rec) => {
+                html += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-3 whitespace-nowrap text-[11px] font-medium text-slate-500">${rec.timestamp}</td>
+                        <td class="p-3 font-bold text-slate-800">${rec.name}</td>
+                        <td class="p-3 font-semibold text-sky-700">${rec.class}</td>
+                        <td class="p-3 text-center font-extrabold text-sky-600 text-sm">${rec.score}</td>
+                        <td class="p-3 text-center text-xs font-semibold"><span class="text-emerald-600">${rec.correct}B</span> / <span class="text-rose-500">${rec.wrong}S</span></td>
+                        <td class="p-3 text-center font-semibold text-emerald-600">${rec.accuracy || '-'}</td>
+                        <td class="p-3"><span class="bg-sky-100 text-sky-800 px-2 py-0.5 rounded-lg text-[10px] font-bold">${rec.category}</span></td>
+                        <td class="p-3 text-center">
+                            <button onclick="viewStudentDetail('${rec.id}')" class="bg-sky-600 hover:bg-sky-700 active:scale-95 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 mx-auto shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-file-lines"></i> Lihat Rekap
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function viewStudentDetail(recId) {
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            const record = history.find(r => r.id === recId);
+            if (!record) return;
+
+            document.getElementById("detailStudentName").textContent = `Salinan Rekap: ${record.name}`;
+            document.getElementById("detailStudentMeta").textContent = `Kelas: ${record.class} | Skor: ${record.score}/100 (${record.accuracy}) | Waktu: ${record.timestamp}`;
+
+            const container = document.getElementById("studentDetailContent");
+            let html = "";
+
+            if (record.answers && record.answers.length > 0) {
+                record.answers.forEach((ans, idx) => {
+                    html += `
+                        <div class="p-3 rounded-xl border ${ans.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'}">
+                            <div class="font-bold mb-1 ${ans.isCorrect ? 'text-emerald-800' : 'text-rose-800'}">
+                                Soal ${idx + 1}: ${ans.questionText}
+                            </div>
+                            <div class="text-[11px] text-slate-600">
+                                <span>Jawaban Siswa: <strong class="${ans.isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${ans.userAns}</strong></span>
+                                ${!ans.isCorrect ? `<span class="ml-2 text-emerald-800">(Kunci: <strong>${ans.correctAns}</strong>)</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = `<p class="text-slate-400 italic">Rincian jawaban tidak tersedia untuk salinan catatan ini.</p>`;
+            }
+
+            container.innerHTML = html;
+            document.getElementById("studentDetailModal").classList.remove("hidden");
+        }
+
+        function closeStudentDetailModal() {
+            document.getElementById("studentDetailModal").classList.add("hidden");
+        }
+
+        function openConfirmDeleteModal() {
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            if (history.length === 0) {
+                alert("Tidak ada data rekap yang perlu dihapus.");
+                return;
+            }
+            document.getElementById("confirmDeleteModal").classList.remove("hidden");
+        }
+
+        function closeConfirmDeleteModal() {
+            document.getElementById("confirmDeleteModal").classList.add("hidden");
+        }
+
+        function clearAdminDataConfirmed() {
+            localStorage.removeItem("pjok_quiz_rekap");
+            closeConfirmDeleteModal();
+            renderAdminRekapTable();
+        }
+
+        function downloadRekapCSV() {
+            const history = JSON.parse(localStorage.getItem("pjok_quiz_rekap") || "[]");
+            if (history.length === 0) {
+                alert("Belum ada salinan rekap data nilai yang bisa diunduh!");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Waktu Pengerjaan,Nama Siswa,Kelas,Skor Akhir,Jumlah Benar,Jumlah Salah,Akurasi,Kategori Pencapaian\n";
+
+            history.forEach(r => {
+                const row = `"${r.timestamp}","${r.name}","${r.class}",${r.score},${r.correct},${r.wrong},"${r.accuracy}","${r.category}"`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Salinan_Rekap_Nilai_PJOK_SenamIrama_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = function() {
+            const savedName = localStorage.getItem("pjok_studentName");
+            const savedClass = localStorage.getItem("pjok_studentClass");
+
+            if (savedName && savedClass) {
+                document.getElementById("inputStudentName").value = savedName;
+                document.getElementById("inputStudentClass").value = savedClass;
+            }
+        };
+    </script>
+</body>
+</html>
